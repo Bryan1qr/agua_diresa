@@ -92,3 +92,25 @@ View(puntos_fuera)
 write.xlsx(puntos_fuera %>% 
   st_drop_geometry(), "reporte_puntos_fuera.xlsx")
 
+
+
+ggplot() +
+  geom_sf(data = tacna, fill = "transparent", lwd = 0.3) +
+  geom_hex(data = fechados, aes(x = ESTE, y = NORTE), bins = 10, alpha = 0.9, color = "white", lwd = 0.3) + 
+  theme_bw() + scale_fill_viridis_c() +
+  labs(color = "Horas/día", 
+       title = "Ubicación de los puntos de monitoreo de la DIRESA - Tacna", 
+       subtitle = "Calidad de agua - Según ubicación de sus muestreos",
+      fill = "Monitoreos") +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5, size = 15),
+        plot.subtitle = element_text(face = "italic", hjust = 0.5, size = 12),
+        plot.margin = margin(t = 10, r = 20, b = 10, l = 20),
+        legend.position = "top", axis.text.x = element_text(size = 6.5),
+        axis.text.y = element_text(size = 7, angle = 90, , hjust = 0.5),
+        axis.title = element_blank(), strip.background = element_rect(fill = "white"),
+        legend.title = element_text(hjust = 0.7, vjust = 0.7, face = "bold")) +
+  facet_grid(year~UBICACION_MUESTREO) +
+  guides(fill = guide_colourbar(barwidth = 30,
+                                barheight = 1)) -> graph2
+
+ggsave("mapa_diresa2.pdf", graph2, width = 210, height = 297, units = "mm")
